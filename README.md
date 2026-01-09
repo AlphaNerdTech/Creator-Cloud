@@ -44,4 +44,4 @@ If you run into issues, open a GitHub Issue with:
 - logs (redact private info)
 
 — Scott / AlphaNerd Tech
-▶️ YouTube: https://www.youtube.com/@alphanerdtravels
+
