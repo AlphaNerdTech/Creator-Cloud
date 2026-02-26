@@ -1,103 +1,146 @@
-## Ingest (Creator Cloud)
+# Ingest (Creator Cloud)
 
-This folder contains the **public-safe ingest workflow** used in the Creator Cloud project.
+This folder contains the public-safe ingest workflow used in the Creator Cloud project.
 
-It is designed for **immutable OS environments** (such as ZimaOS) and real-world creator use — not lab-only setups.
+This is the automation shown in:
+
+🎬 Stop Managing Files – Part 3  
+“Trust the Automation”
 
 ---
 
 ## What This Does
 
+The ingest workflow:
+
 - Detects newly mounted camera media under `/media`
 - Automatically copies footage to persistent storage
-- Sorts files into a predictable structure:
+- Sorts files into a predictable structure
+- Prevents duplicate imports
+- Logs everything for traceability
 
-```
-DEST_ROOT / CAMERA / YYYY-MM-DD / CARDNAME_TIMESTAMP /
-  ├── Photos
-  ├── Videos
-  └── Other`
-```
-- Logs every action for troubleshooting and verification
-- Supports mixed cards (DJI + Canon on the same card)
+Designed for:
+- ZimaOS (immutable-style environments)
+- Real-world creator use
+- Not lab-only demos
 
-## Files in This Folder
-`auto_ingest.sh`
-Performs the actual ingest and file sorting
+---
 
-`ingest_watch.sh`
-Runs continuously in the background and triggers ingest when new media mounts appear
+## Folder Structure
 
-`config.example.env`
-Example configuration file (safe to commit)
+Media is organized into:
 
-Setup (Required)
-1) Create your config file
-```
-cp config.example.env config.env
-```
-Edit config.env to match your system.
 
-2) Make scripts executable
-```
-chmod +x auto_ingest.sh ingest_watch.sh
-```
+DEST_ROOT /
+CAMERA /
+YYYY-MM-DD /
+CARDNAME_TIMESTAMP /
+Photos /
+Videos /
+Other /
 
-Manual Ingest (Optional)
-You can run ingest manually for testing or one-off use:
-```
-./auto_ingest.sh /path/to/mounted/card
-```
 
-## Auto-Ingest
-Auto-ingest requires a background watcher process that monitors /media for newly mounted devices.
+Example:
 
-Choose the startup method that fits your OS.
 
-Auto-Ingest Watcher (systemd – Advanced / Optional)
-If your system supports systemd and allows persistent writes to /etc, you can run the watcher as a service.
-
-⚠️ Some immutable OS builds do not persist /etc across reboots.
-
-Create the service
-```
-nano /etc/systemd/system/creatorcloud-ingest.service
-```
-
-Paste:
-
-```
-[Unit]
-Description=CreatorCloud Auto Ingest Watcher
-After=local-fs.target
-Wants=local-fs.target
-
-[Service]
-Type=simpleival
-ExecStart=/bin/sh /media/ANT_Files/CreatorCloud/scripts/ingest_watch.sh
-Restart=always
-RestartSec=2
-User=root
-
-[Install]
-WantedBy=multi-user.target
-```
-Enable and start the service
-```
-systemctl daemon-reload
-systemctl enable --now creatorcloud-ingest.service
-```
-Verify service status
-```
-systemctl is-enabled creatorcloud-ingest.service
-systemctl status creatorcloud-ingest.service --no-pager | head -n 20
-```
-You want to see:
-```
-enabled
-active (running)
-```
+Library/
+DJI/
+2026-01-03/
+sdd1-usb-Generic_MassStor_162246_160315/
+Videos/
+Photos/
 
 
 ---
 
+## Files In This Folder
+
+| File | Purpose |
+|------|----------|
+| `auto_ingest.sh` | Main ingest automation script |
+| `ingest_watch.sh` | Loop/watcher script |
+| `config.example.env` | Example configuration file |
+
+---
+
+## Quick Start
+
+1️⃣ Copy the example config:
+
+
+cp config.example.env config.env
+
+
+2️⃣ Edit your paths inside `config.env`
+
+3️⃣ Run ingest manually:
+
+
+sudo bash auto_ingest.sh
+
+
+4️⃣ Or start watcher:
+
+
+sudo bash ingest_watch.sh
+
+
+---
+
+## Logging
+
+Logs are written to:
+
+
+/media/ANT_Files/CreatorCloud/logs/
+
+
+- ingest.log  
+- ingest_summary.log  
+
+Monitor in real time:
+
+
+tail -f /media/ANT_Files/CreatorCloud/logs/ingest.log
+
+
+---
+
+## Design Philosophy
+
+This system is built around one principle:
+
+> Trust the automation.
+
+When configured correctly:
+
+- You plug in a card
+- It copies
+- It sorts
+- It verifies
+- It logs
+- You move on with your life
+
+No manual folder management.  
+No guessing where footage went.  
+No duplicate imports.
+
+---
+
+## Safety Notice ⚠️
+
+This script moves and copies files.
+
+- Test with non-critical data first  
+- Verify DEST_ROOT before running  
+- Read the script if you are unsure  
+
+You are responsible for your data.
+
+---
+
+## Related Content
+
+This project is built and documented alongside the Creator Cloud YouTube series on Alpha Nerd Tech.
+
+▶️ YouTube: https://www.youtube.com/@alphanerdtravels
