@@ -1,7 +1,10 @@
 # Creator Cloud — Trust the Automation (Part 3)
 ### Quick How-To Guide
-Remember, My pool name is ANT_Files and my structure is /ANT_Files/CreatorCloud/
-You will want to replace that with your own structure.
+
+---
+> ⚠️ **Remember, My pool name is ANT_Files and my structure is /ANT_Files/CreatorCloud/**
+> 
+>    **You will want to replace that with your own structure.**
 ---
 
 ## ✅ Step 0 — Pick ONE Folder Naming Scheme *(do this first)*
